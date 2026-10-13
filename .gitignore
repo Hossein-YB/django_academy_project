@@ -2,6 +2,9 @@
 .idea
 
 *.pyc
+*.sqlite3
+*.db
+
 
 .env
 local_*.py
