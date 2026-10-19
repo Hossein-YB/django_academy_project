@@ -3,6 +3,7 @@ from django.db import models
 
 class ProductType(models.Model):
     title = models.CharField(max_length=32, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modify_at = models.DateTimeField(auto_now=True)
 
@@ -21,6 +22,7 @@ class ProductAttribute(models.Model):
     )
     title = models.CharField(max_length=32)
     product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE, related_name="attributes")
+    is_active = models.BooleanField(default=True)
     attribute_type = models.PositiveSmallIntegerField(default=INTEGER, choices=ATTRIBUTE_TYPES_FILED)
     created_at = models.DateTimeField(auto_now_add=True)
     modify_at = models.DateTimeField(auto_now=True)
@@ -31,17 +33,22 @@ class ProductAttribute(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=32, unique=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name="children")
+    parent = models.ForeignKey('self', on_delete=models.CASCADE,null=True, blank=True, related_name="children")
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modify_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name = "category"
+        verbose_name_plural = "categories"
     def __str__(self):
         return self.name
 
 
 class Brand(models.Model):
     name = models.CharField(max_length=32, unique=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name="children")
+    parent = models.ForeignKey('self', on_delete=models.CASCADE,null=True, blank=True, related_name="children")
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modify_at = models.DateTimeField(auto_now=True)
 
@@ -54,6 +61,7 @@ class Product(models.Model):
     title = models.CharField(max_length=300)
     upc = models.BigIntegerField(unique=True)
     description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
 
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="products")
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name="products")
@@ -68,6 +76,7 @@ class ProductAttributeValue(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="attribute_values")
     value = models.CharField(max_length=40)
     attribute = models.ForeignKey(ProductAttribute, on_delete=models.PROTECT, related_name="values")
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modify_at = models.DateTimeField(auto_now=True)
 
